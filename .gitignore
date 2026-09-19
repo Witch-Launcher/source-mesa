@@ -1,0 +1,15 @@
+# Build output directories
+mesa-build-25.0.7/
+mesa26-build/
+mesa-kk-build/
+
+# Full ANGLE checkout (12GB - managed via https://github.com/Ynnyny/angle.git)
+angle-build/angle/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Temporary / OS files
+.DS_Store
+*.DS_Store

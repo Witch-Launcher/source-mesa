@@ -1,0 +1,29 @@
+[binaries]
+c = '/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/clang-wrappers/clang-ios'
+cpp = '/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/clang-wrappers/clang++-ios'
+objc = '/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/clang-wrappers/clang-ios'
+objcpp = '/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/clang-wrappers/clang++-ios'
+ar = '/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar'
+strip = '/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip'
+nm = '/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm'
+ranlib = '/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib'
+cmake = 'cmake'
+
+[host_machine]
+system = 'darwin'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
+
+[properties]
+needs_exe_wrapper = false
+
+[built-in options]
+c_args = ['-DVK_USE_PLATFORM_IOS_MVK', '-DVK_USE_PLATFORM_METAL_EXT']
+cpp_args = ['-DVK_USE_PLATFORM_IOS_MVK', '-DVK_USE_PLATFORM_METAL_EXT']
+objc_args = ['-DVK_USE_PLATFORM_IOS_MVK', '-DVK_USE_PLATFORM_METAL_EXT']
+objcpp_args = ['-DVK_USE_PLATFORM_IOS_MVK', '-DVK_USE_PLATFORM_METAL_EXT']
+c_link_args = ['-arch', 'arm64', '-miphoneos-version-min=14.0', '-dynamiclib', '-Wl,-rpath,@loader_path', '-lobjc', '-lSystem']
+cpp_link_args = ['-arch', 'arm64', '-miphoneos-version-min=14.0', '-dynamiclib', '-Wl,-rpath,@loader_path', '-lobjc', '-lSystem']
+default_library = 'shared'
+strip = true

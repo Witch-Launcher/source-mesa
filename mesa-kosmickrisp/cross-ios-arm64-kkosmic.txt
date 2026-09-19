@@ -1,0 +1,30 @@
+[binaries]
+c = '/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/clang-wrappers/clang-ios'
+cpp = '/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/clang-wrappers/clang++-ios'
+objc = '/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/clang-wrappers/clang-ios'
+objcpp = '/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/clang-wrappers/clang++-ios'
+ar = '/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar'
+strip = '/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip'
+nm = '/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm'
+ranlib = '/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib'
+cmake = 'cmake'
+
+[host_machine]
+system = 'darwin'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
+
+[properties]
+needs_exe_wrapper = false
+
+[built-in options]
+# KosmicKrisp needs Metal surface extension and beta extensions
+c_args = ['-DVK_USE_PLATFORM_METAL_EXT', '-DVK_ENABLE_BETA_EXTENSIONS', '-DTARGET_OS_IOS=1']
+cpp_args = ['-DVK_USE_PLATFORM_METAL_EXT', '-DVK_ENABLE_BETA_EXTENSIONS', '-DTARGET_OS_IOS=1']
+objc_args = ['-DVK_USE_PLATFORM_METAL_EXT', '-DVK_ENABLE_BETA_EXTENSIONS', '-DTARGET_OS_IOS=1']
+objcpp_args = ['-DVK_USE_PLATFORM_METAL_EXT', '-DVK_ENABLE_BETA_EXTENSIONS', '-DTARGET_OS_IOS=1']
+c_link_args = ['-arch', 'arm64', '-miphoneos-version-min=15.0', '-dynamiclib', '-Wl,-rpath,@loader_path', '-lobjc', '-lSystem', '-framework', 'Metal', '-framework', 'QuartzCore', '-framework', 'Foundation']
+cpp_link_args = ['-arch', 'arm64', '-miphoneos-version-min=15.0', '-dynamiclib', '-Wl,-rpath,@loader_path', '-lobjc', '-lSystem', '-framework', 'Metal', '-framework', 'QuartzCore', '-framework', 'Foundation']
+default_library = 'shared'
+strip = true

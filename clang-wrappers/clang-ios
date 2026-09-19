@@ -1,0 +1,26 @@
+#!/bin/bash
+IOS_SDK="/Volumes/D/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.2.sdk"
+MACOS_SDK="/Volumes/D/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+CLANG="/Volumes/D/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+STUB="/Volumes/project/Angel-Aura-Amethyst-iOS/Angel-Aura-Amethyst-iOS/source/ios-stubs"
+ARGS=()
+for arg in "$@"; do
+    if [[ "$arg" == *MacOSX.platform* ]] && [[ "$arg" == *"-I"* ]]; then
+        continue
+    fi
+    if [[ "$arg" == *MacOSX.platform* ]] && [[ "$arg" == "-L"* ]]; then
+        continue
+    fi
+    if [[ "$arg" == *MacOSX.platform* ]] && [[ "$arg" == *.tbd || "$arg" == *.a ]]; then
+        arg="$(echo "$arg" | sed "s|$MACOS_SDK|$IOS_SDK|g")"
+    fi
+    ARGS+=("$arg")
+done
+ARCH_FOUND=0
+for arg in "${ARGS[@]}"; do
+    [[ "$arg" == "arm64" || "$arg" == "aarch64" ]] && ARCH_FOUND=1
+done
+if [ $ARCH_FOUND -eq 0 ]; then
+    ARGS=("-arch" "arm64" "${ARGS[@]}")
+fi
+exec "$CLANG" -isysroot "$IOS_SDK" "${ARGS[@]}" -I "$STUB"
