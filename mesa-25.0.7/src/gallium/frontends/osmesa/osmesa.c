@@ -161,6 +161,11 @@ create_st_manager(void)
    global_fscreen = CALLOC_STRUCT(pipe_frontend_screen);
    if (global_fscreen) {
       global_fscreen->screen = osmesa_create_screen();
+      if (!global_fscreen->screen) {
+         FREE(global_fscreen);
+         global_fscreen = NULL;
+         return;
+      }
       global_fscreen->get_param = osmesa_st_get_param;
       global_fscreen->get_egl_image = NULL;
    }

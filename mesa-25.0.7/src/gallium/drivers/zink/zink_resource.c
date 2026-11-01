@@ -325,6 +325,20 @@ check_ici(struct zink_screen *screen, VkImageCreateInfo *ici, uint64_t modifier)
    VkImageFormatProperties image_props;
    VkResult ret;
    bool optimalDeviceAccess = true;
+   /* Multi-layer images (cube maps, arrays) requesting attachment usage are
+    * rejected by the format probe on devices where maxFramebufferLayers is
+    * lower than the layer count (e.g. MoltenVK on A11, where the GPU has no
+    * layered attachment support and maxFramebufferLayers is 1). The image
+    * itself is still creatable and usable through single-layer attachment
+    * views, which are the only kind zink creates here, so probe without the
+    * attachment bits.
+    */
+   VkImageUsageFlags probe_usage = ici->usage;
+   if (ici->arrayLayers > screen->info.props.limits.maxFramebufferLayers)
+      probe_usage &= ~(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+                       VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
+                       VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT |
+                       VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT);
    assert(modifier == DRM_FORMAT_MOD_INVALID ||
           (VKSCR(GetPhysicalDeviceImageFormatProperties2) && screen->info.have_EXT_image_drm_format_modifier));
    if (VKSCR(GetPhysicalDeviceImageFormatProperties2)) {
@@ -349,7 +363,7 @@ check_ici(struct zink_screen *screen, VkImageCreateInfo *ici, uint64_t modifier)
       info.format = ici->format;
       info.type = ici->imageType;
       info.tiling = ici->tiling;
-      info.usage = ici->usage;
+      info.usage = probe_usage;
       info.flags = ici->flags;
 
       VkPhysicalDeviceImageDrmFormatModifierInfoEXT mod_info;
@@ -375,7 +389,7 @@ check_ici(struct zink_screen *screen, VkImageCreateInfo *ici, uint64_t modifier)
 #endif
    } else
       ret = VKSCR(GetPhysicalDeviceImageFormatProperties)(screen->pdev, ici->format, ici->imageType,
-                                                   ici->tiling, ici->usage, ici->flags, &image_props);
+                                                   ici->tiling, probe_usage, ici->flags, &image_props);
    if (ret != VK_SUCCESS)
       return false;
    if (ici->extent.depth > image_props.maxExtent.depth ||
@@ -1295,8 +1309,12 @@ create_image(struct zink_screen *screen, struct zink_resource_object *obj,
       ici.format = zink_get_format(screen, zink_format_get_emulated_alpha(templ->format));
       mod = eval_ici(screen, &ici, templ, templ->bind, ici_modifier_count, ici_modifiers, &success);
    }
-   if (!success)
+   if (!success) {
+      mesa_loge("zink: no supported image create config for %s %ux%ux%u target=%d layers=%u levels=%u bind=0x%x",
+                util_format_name(templ->format), templ->width0, templ->height0, templ->depth0,
+                (int)templ->target, MAX2(templ->array_size, 1), templ->last_level + 1, templ->bind);
       return roc_fail_and_free_object;
+   }
 
    if (ici.tiling == VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT && srgb &&
       util_format_get_nr_components(srgb) == 4 &&

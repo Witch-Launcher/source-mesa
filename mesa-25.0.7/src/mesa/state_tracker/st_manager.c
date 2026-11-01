@@ -945,6 +945,12 @@ st_api_create_context(struct pipe_frontend_screen *fscreen,
    struct gl_config mode, *mode_ptr = &mode;
    bool no_error = false;
 
+   if (!fscreen || !fscreen->screen) {
+      if (error)
+         *error = ST_CONTEXT_ERROR_NO_MEMORY;
+      return NULL;
+   }
+
    _mesa_initialize(attribs->options.mesa_extension_override);
 
    /* Create a hash table for the framebuffer interface objects

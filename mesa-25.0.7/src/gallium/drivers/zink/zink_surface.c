@@ -183,6 +183,14 @@ apply_view_usage_for_format(struct zink_screen *screen, struct zink_resource *re
    if ((res->obj->vkusage & attachment) &&
        !(feats & (VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT | VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT))) {
       ivci->pNext = &surface->usage_info;
+   } else if ((res->obj->vkusage & attachment) &&
+              ivci->subresourceRange.layerCount > screen->info.props.limits.maxFramebufferLayers) {
+      /* Devices without layered attachment support (e.g. MoltenVK on A11 where
+       * maxFramebufferLayers is 1) reject multi-layer image views that inherit
+       * attachment usage from the image. Such views are only used for sampling
+       * or single-layer rendering, so restrict the view usage accordingly.
+       */
+      ivci->pNext = &surface->usage_info;
    }
 }
 
